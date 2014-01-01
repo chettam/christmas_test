@@ -21,15 +21,37 @@ class Image
 		@pixels[pixel_coords[1] -1][pixel_coords[0] -1] = color	
 	end
 
+	def draw_vertical_line!(x,y1,y2,color)
+			(y1..y2).each do |y| 
+				color_pixel!([x,y],color) if contain?([x,y])
+			end
+	end
+
+	def draw_horizontal_line!(y,x1,x2,color)
+			(x1..x2).each do |x| 
+				color_pixel!([x,y],color) if contain?([x,y])
+			end
+	end
+
+	def color_fill!(pixel_coords,color)
+		initial_pixel_color = pixel_color(pixel_coords)
+		color_pixel!(pixel_coords,color)
+		touching_identical_pixel(pixel_coords,initial_pixel_color).each do |pixel_coords|
+			color_fill!(pixel_coords,color) if pixel_color(pixel_coords) != color
+		end
+	end
+
 	def pixel_color(pixel_coords)
 		@pixels[pixel_coords[1] -1][pixel_coords[0] -1]
 	end
 
-	def adjacent_cell_with_same_color(pixel_coords)
-		color = pixel_color(pixel_coords)
+	def touching_identical_pixel(pixel_coords,color =nil)
+		color ||= pixel_color(pixel_coords)
 		x, y = pixel_coords
-		cells = [[x-1,y],[x+1,y],[x,y-1],[x,y+1]]
-		cells.select{|cell| pixel_color(cell) == color && contain?(cell)}.sort
+		candidate_pixels = [[x-1,y],[x+1,y],[x,y-1],[x,y+1]]
+		candidate_pixels.select do |candidate_pixel| 
+			pixel_color(candidate_pixel) == color && contain?(candidate_pixel)
+		end.sort
 	end
 
 	def to_s
