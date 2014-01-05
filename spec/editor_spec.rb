@@ -126,11 +126,10 @@ describe Editor  do
 
 		it "require validate coordinates" do 
 			expect(lambda{editor_image_4_by_6.execute("L 100 200 A")}).to raise_error
-
 		end
 
 		it "require valid color" do 
-
+			expect(lambda{editor_image_4_by_6.execute("L 100 200 2")}).to raise_error
 		end
 
 	end
@@ -142,7 +141,8 @@ describe Editor  do
 		end
 
 		it "require 4 paramters" do
-
+			expect(lambda{editor_image_4_by_6.execute("V")}).to  raise_error
+			expect(editor_image_4_by_6.execute("V 1 2")).to eq("Invalid number of params")
 		end
 
 		it "require validate coordinates" do 
@@ -162,7 +162,8 @@ describe Editor  do
 		end
 
 		it "require 4 paramters" do 
-
+			expect(lambda{editor_image_4_by_6.execute("H")}).to  raise_error
+			expect(editor_image_4_by_6.execute("H 1 2")).to eq("Invalid number of params")
 		end
 
 		it "require validate coordinates" do
@@ -182,7 +183,8 @@ describe Editor  do
 		end
 
 		it "require 4 paramters" do
-
+			expect(lambda{editor_image_4_by_6.execute("F")}).to  raise_error
+			expect(editor_image_4_by_6.execute("F 1 2")).to eq("Invalid number of params")
 		end
 
 		it "require validate coordinates" do

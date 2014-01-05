@@ -107,16 +107,27 @@ class Editor
 	def command_v(params)
 		return "no image" if @image.nil?
 		return "Invalid number of params" unless valid_number_of_params(params,4)
+		valid_coords?(params[0],params[1])
+		valid_coords?(params[0],params[2])
+		color = valid_color?(params[3])
+		@image.draw_vertical_line!(params[0],params[1],params[2],color)
 	end
 
 	def command_h(params)
 		return "no image" if @image.nil?
 		return "Invalid number of params" unless valid_number_of_params(params,4)
+		valid_coords?(params[0],params[2])
+		valid_coords?(params[1],params[2])
+		color = valid_color?(params[3])
+		@image.draw_horizontal_line!(params[2],params[0],params[1],color)
 	end
 
 	def command_f(params)
 		return "no image" if @image.nil?
 		return "Invalid number of params" unless valid_number_of_params(params,3)
+		coords = valid_coords?(params.shift(2))
+		color = valid_color?(params.first)
+		@image.color_fill!(coords,colour)
 	end
 
 	def command_s
