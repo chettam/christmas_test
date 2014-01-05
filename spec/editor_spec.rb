@@ -125,6 +125,7 @@ describe Editor  do
 		end
 
 		it "require validate coordinates" do 
+			expect(lambda{editor_image_4_by_6.execute("L 100 200 A")}).to raise_error
 
 		end
 
