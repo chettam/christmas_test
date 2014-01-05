@@ -23,13 +23,7 @@ class Editor
 		command = parse(input)
 		 valid_command?(command)
 	end
-
-	def parse(input)
-		args = input.split(' ').map do |x| 
-			Integer(x) rescue x 
-		end
-	end
-
+	
 	def i(params)
 		valid_number_of_params?(__method__,params,2)
 		valid_size?(params)

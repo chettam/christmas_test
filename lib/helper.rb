@@ -15,6 +15,12 @@ module Helper
     E: 'Exit'
   }
 
+  def parse(input)
+    args = input.split(' ').map do |x| 
+      Integer(x) rescue x 
+    end
+  end
+
   def valid_command?(args)
     return 'Invalid command, please enter a valid command' unless COMMANDS.has_key?(args[0].to_sym)
     cmd = args.shift.downcase
@@ -25,7 +31,6 @@ module Helper
       puts  standard_error.message
     end
   end
-  
 
   def valid_color?(color)
   	raise ArgumentError, 'Invalid color' unless COLORS.include?(color)
