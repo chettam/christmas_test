@@ -27,7 +27,7 @@ class Editor
 		list
 	end
 
-	def list 
+	def list(params = nil)
 		COMMANDS.each{|shortcut,desc| puts "\t#{shortcut} => #{desc}"}
 	end
 
@@ -45,29 +45,13 @@ class Editor
 
 	def valid_command?(args)
 		return 'Invalid command, please enter a valid command' unless COMMANDS.has_key?(args[0].to_sym)
-		cmd = args.shift
+		cmd = args.shift.downcase
 		params = args.length > 0 ? args : nil 
-
-		case cmd
-			when "I"
-				command_i(params)
-			when 'C'
-				command_c 
-			when 'L'
-				command_l(params)
-			when 'V'
-				command_v(params)
-			when 'H'
-				command_h(params)
-			when 'F'
-				command_f(params)
-			when 'S'
-				command_s
-			when 'E'
-				command_e
-			when 'LIST'
-				list
-			end
+		begin 
+			self.send(cmd,params)
+		rescue ArgumentError => arguement_error
+			puts arguement_error.message
+		end
 	end
 
 	def valid_color?(color)
@@ -80,62 +64,65 @@ class Editor
 		coords
 	end
 
-	def valid_number_of_params(params,number)
+	def valid_number_of_params?(params,number)
+		return false if params.nil?
 		params.length == number
 	end
 
-	def command_i(params)
+	
+
+	def i(params)
 		return "Invalid image size, please create an image of less than 250 x 250 px" if params.any?{|param| param >  MAX_SIZE}
-		return "Invalid number of params" unless valid_number_of_params(params,2)
+		return "Invalid number of params" unless valid_number_of_params?(params,2)
 		return "Image already created, use c to clear" unless @image.nil?
 		@image = Image.new(params[0],params[1])
 	end
 
-	def command_c
+	def c(params)
 		return "no image to clear" if @image.nil?
 		@image = Image.new(@image.m,@image.n)
 	end
 
-	def command_l(params)
+	def l(params)
 		return "no image" if @image.nil?
-		return "Invalid number of params" unless valid_number_of_params(params,3)
+		return "Invalid number of params" unless valid_number_of_params?(params,3)
 		coords = valid_coords?(params.shift(2))
 		color = valid_color?(params.first)
 		@image.color_pixel!(coords,color)
 	end
 	
-	def command_v(params)
+	def v(params)
 		return "no image" if @image.nil?
-		return "Invalid number of params" unless valid_number_of_params(params,4)
+		return "Invalid number of params" unless valid_number_of_params?(params,4)
 		valid_coords?(params[0],params[1])
 		valid_coords?(params[0],params[2])
 		color = valid_color?(params[3])
 		@image.draw_vertical_line!(params[0],params[1],params[2],color)
 	end
 
-	def command_h(params)
+	def h(params)
 		return "no image" if @image.nil?
-		return "Invalid number of params" unless valid_number_of_params(params,4)
+		return "Invalid number of params" unless valid_number_of_params?(params,4)
 		valid_coords?(params[0],params[2])
 		valid_coords?(params[1],params[2])
 		color = valid_color?(params[3])
 		@image.draw_horizontal_line!(params[2],params[0],params[1],color)
 	end
 
-	def command_f(params)
+	def f(params)
 		return "no image" if @image.nil?
-		return "Invalid number of params" unless valid_number_of_params(params,3)
+		return "Invalid number of params" unless valid_number_of_params?(params,3)
 		coords = valid_coords?(params.shift(2))
 		color = valid_color?(params.first)
 		@image.color_fill!(coords,colour)
 	end
 
-	def command_s
+	def s(params)
 		return 'No Image, please create an image first' if @image.nil?
 		puts @image
 	end
 
-	def command_e
+	def e(params)
 		puts 'Thanks for using Graphical editor'
 		exit
 	end
