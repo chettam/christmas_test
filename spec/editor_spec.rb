@@ -3,12 +3,13 @@ require_relative './spec-helper'
 
 describe Editor  do
 	let(:editor){Editor.new}
-	let(:editor_image_4_by_6) {editor.execute("I 4 6 "); editor }
+	let(:editor_with_image){editor.execute('I 4 6'); editor}
 
 	context 'creation' do 
+
 		it 'should include a welcome message  and prompt user input' do
 			printed = capture_stdout{ editor}
-			printed.should include("Graphical Editor. Available Commands\n")
+			printed.should include('Graphical Editor. Available Commands')
 		end
 
 		it 'should include all the available commands' do
@@ -18,30 +19,32 @@ describe Editor  do
 	end
 
 	context 'knowledge' do
+
 		it 'should know how to parse a string to an array of command and paramters' do
-			expect(editor.parse("I 200 200")).to eq(['I',200,200])
-			expect(editor.parse("C")).to eq(['C'])
-			expect(editor.parse("L 2 3 A")).to eq(['L',2,3,'A'])
-			expect(editor.parse("V 2 54 58 B")).to eq(['V',2,54,58,'B'])
-			expect(editor.parse("H 45 50 50 B")).to eq(['H',45,50,50,'B'])
-			expect(editor.parse("F 100 100 B")).to eq(['F',100,100,'B'])
-			expect(editor.parse("S")).to eq(['S'])
+			expect(editor.parse('I 200 200')).to eq(['I',200,200])
+			expect(editor.parse('C')).to eq(['C'])
+			expect(editor.parse('L 2 3 A')).to eq(['L',2,3,'A'])
+			expect(editor.parse('V 2 54 58 B')).to eq(['V',2,54,58,'B'])
+			expect(editor.parse('H 45 50 50 B')).to eq(['H',45,50,50,'B'])
+			expect(editor.parse('F 100 100 B')).to eq(['F',100,100,'B'])
+			expect(editor.parse('S')).to eq(['S'])
 		end
 	end
 
 	context 'input validation' do
+
 		it 'should  re prompt if the command is empty' do 
-			expect(editor.execute('')).to eq("Please enter a valid command")
+			expect(editor.execute('')).to eq('Please enter a valid command')
 		end
 
 		it 'should  re prompt if the command is using special caraters' do 
-			expect(editor.execute('\t')).to eq("Please enter a valid command")
-			expect(editor.execute('\t\r')).to eq("Please enter a valid command")
+			expect(editor.execute('\t')).to eq('Please enter a valid command')
+			expect(editor.execute('\t\r')).to eq('Please enter a valid command')
 		end
 
 		it 'should re prompt if the first parameter is incorrect' do
 			invalid_commands = ['A','B','D','G','J','K','M','N','O','P','T','U','W','X','Y','Z']
-			invalid_commands.each{|command| expect(editor.execute(command)).to eq("Invalid command, please enter a valid command") }
+			invalid_commands.each{|command| expect(editor.execute(command)).to eq('Invalid command, please enter a valid command') }
 		end
 
 		it 'should re prompt if the first parameter is incorrect' do
@@ -57,7 +60,7 @@ describe Editor  do
 
 		it 'should re prompt if lower case characters are used' do
 			('a'..'z').to_a.each do |char| 
-				expect(editor.execute(char)).to eq("Invalid command, please enter a valid command")
+				expect(editor.execute(char)).to eq('Invalid command, please enter a valid command')
 			end
 		end
 
@@ -68,132 +71,196 @@ describe Editor  do
 	end
 
 	context 'command_i' do
-		it 'should not  create an image if m or n are m are more than 250px' do 
-			expect(editor.execute("I 300 100")).to eq("Invalid image size, please create an image of less than 250 x 250 px")
-			expect(editor.execute("I 100 300")).to eq("Invalid image size, please create an image of less than 250 x 250 px")
-		end	
 
-		it 'should take 2 params' do
-			expect( lambda{editor.execute("I")}).to raise_error
-			expect(editor.execute("I 1 2 3 ")).to eq("Invalid number of params")
-		end
+		it 'should not  create an image if m or n are more than 250px' do 
+      printed = capture_stdout do
+        editor.execute('I 300 100')
+        editor.execute('I 100 300')
+      end
+      printed.should include('Invalid image size, please create an image of less than 250 x 250 px')
+    end
 
-		it 'should not create an image if one already exist' do
-			editor.execute("I 10 10")
-			expect(editor.execute("I 20 20")).to eq("Image already created, use c to clear")
-		end
-	end
 
-	context 'command_c' do
-		it 'should clear an image if no image exist' do
-			printed = capture_stdout do
-				editor_image_4_by_6.execute("L 1 1 A")
-				editor_image_4_by_6.execute("C")
-				editor_image_4_by_6.execute("S")
-			end
-			printed.should include("OOOO\nOOOO\nOOOO\nOOOO\nOOOO\nOOOO\n")
-		end
+    it 'should take 2 params' do
+      printed = capture_stdout do
+        editor.execute('I')
+        editor.execute('I 1 2 3 ')
+        end
+        printed.should include('Invalid number of params')
+      end
 
-		it 'should not clear an image if no image exist' do
-			expect(editor.execute("C")).to eq("no image to clear")
-		end
-	end
-	context 'command_s' do
-		it 'should not display an image if no image exist' do
-			expect(editor.execute("S")).to eq('No Image, please create an image first')
-		end
+      it 'should not create an image if one already exist' do
+        printed = capture_stdout do
+          editor.execute('I 10 10')
+          puts editor.execute('I 20 20')
+        end
+        printed.should include('Image already created, use C to clear')
+      end
+    end
 
-		it 'should display an image if available' do 
-			printed = capture_stdout do
-				editor_image_4_by_6.execute("I 4 6 ")
-				editor_image_4_by_6.execute("L 1 1 A")
-				editor_image_4_by_6.execute("S")
-			end
-			printed.should include("AOOO\nOOOO\nOOOO\nOOOO\nOOOO\nOOOO\n")
-		end
-	end
+    context 'command_c' do
 
-	context 'command_l' do
+      it 'should clear an image' do
+       printed = capture_stdout do
+         editor_with_image.execute('L 1 1 A')
+         editor_with_image.execute('C')
+         editor_with_image.execute('S')
+       end
+       printed.should include("OOOO\nOOOO\nOOOO\nOOOO\nOOOO\nOOOO\n")
+     end
 
-		it "require an existing image" do
-			expect(editor.execute("L 1 2 A")).to eq("no image")
-		end
+     it 'should not clear an image if no image exist' do
+      printed = capture_stdout do
+        editor.execute("C")
+      end
+      printed.should include('No image. Create one with I')
+    end
+  end
 
-		it "require 3 paramters" do
-			expect(lambda{editor_image_4_by_6.execute("L")}).to  raise_error
-			expect(editor_image_4_by_6.execute("L 1 2")).to eq("Invalid number of params")
-		end
+  context 'command_s' do
 
-		it "require validate coordinates" do 
-			expect(lambda{editor_image_4_by_6.execute("L 100 200 A")}).to raise_error
-		end
+    it 'should not display an image if no image exist' do
+      printed = capture_stdout do
+        editor.execute("S")
+      end
+      printed.should include('No image. Create one with I') 
+    end
 
-		it "require valid color" do 
-			expect(lambda{editor_image_4_by_6.execute("L 3 2 2")}).to raise_error
-		end
+    it 'should display an image if available' do 
+     printed = capture_stdout do
+      editor_with_image.execute('I 4 6 ')
+      editor_with_image.execute('L 1 1 A')
+      editor_with_image.execute('S')
+    end
+    printed.should include("AOOO\nOOOO\nOOOO\nOOOO\nOOOO\nOOOO\n")
+    end
+  end
 
-	end
+  context 'command_l' do
 
-	context 'command_v' do
+    it 'require an existing image' do
+      printed = capture_stdout do
+        editor.execute('L 1 2 A')
+      end
+      printed.should include('No image. Create one with I')
+    end
 
-		it "require an existing image" do 
-			expect(editor.execute("V 1 2 3 A")).to eq("no image")
-		end
+    it 'require 3 paramters' do
+      printed = capture_stdout do
+        editor_with_image.execute('L')
+        editor_with_image.execute('L 1 2')
+      end
+      printed.should include('Invalid number of params')
+    end
 
-		it "require 4 paramters" do
-			expect(lambda{editor_image_4_by_6.execute("V")}).to  raise_error
-			expect(editor_image_4_by_6.execute("V 1 2")).to eq("Invalid number of params")
-		end
+    it 'require validate coordinates' do
+      printed = capture_stdout do
+        editor_with_image.execute('L 100 200 A')
+      end
+      printed.should include('Invalid coordinates')
+    end
 
-		it "require validate coordinates" do 
-			expect(lambda{editor_image_4_by_6.execute("V 100 200 200 A")}).to raise_error
-		end
+    it 'require valid color' do
+      printed = capture_stdout do
+        editor_with_image.execute('L 3 2 2')
+      end
+      printed.should include('Invalid color')
+    end
+  end
 
-		it "require valid color" do 
-			expect(lambda{editor_image_4_by_6.execute("V 2 3 4 2")}).to raise_error
-		end
+  context 'command_v' do
 
-	end
+    it 'require an existing image' do
+      printed = capture_stdout do
+        editor.execute('V 1 2 3 A')
+      end
+      printed.should include('No image. Create one with I')
+    end
 
-	context 'command_h' do
+    it 'require 4 paramters' do
+      printed = capture_stdout do
+        editor_with_image.execute('V')
+        editor_with_image.execute('V 1 2')
+      end
+      printed.should include('Invalid number of params')
+    end
 
-		it "require an existing image" do
-			expect(editor.execute("H 1 2 3 A")).to eq("no image")
-		end
+    it 'require validate coordinates' do
+      printed = capture_stdout do
+        editor_with_image.execute('V 100 200 200 A')
+      end
+      printed.should include('Invalid coordinates')
+    end
 
-		it "require 4 paramters" do 
-			expect(lambda{editor_image_4_by_6.execute("H")}).to  raise_error
-			expect(editor_image_4_by_6.execute("H 1 2")).to eq("Invalid number of params")
-		end
+    it 'require valid color' do
+      printed = capture_stdout do
+        editor_with_image.execute('V 2 3 4 2')
+      end
+      printed.should include('Invalid color')
+    end
+  end
 
-		it "require validate coordinates" do
-			expect(lambda{editor_image_4_by_6.execute("H 100 200 200 A")}).to raise_error
-		end
+  context 'command_h' do
 
-		it "require valid color" do 
-			expect(lambda{editor_image_4_by_6.execute("H 2 3 4 2")}).to raise_error
-		end
+    it 'require an existing image' do
+      printed = capture_stdout do
+        editor.execute('H 1 2 3 A')
+      end
+      printed.should include('No image. Create one with I')
+    end
 
-	end
+    it 'require 4 paramters' do
+      printed = capture_stdout do
+        editor_with_image.execute('H')
+        editor_with_image.execute('H 1 2')
+      end
+      printed.should include('Invalid number of params')
+    end
 
-	context 'command_f' do
+    it 'require validate coordinates' do
+      printed = capture_stdout do
+        editor_with_image.execute('H 100 200 200 A')
+      end
+      printed.should include('Invalid coordinates')
+    end
 
-		it "require an existing image" do
-			expect(editor.execute("F 1 2 A")).to eq("no image")
-		end
+    it 'require valid color' do
+      printed = capture_stdout do
+        editor_with_image.execute('H 2 3 4 2')
+      end
+      printed.should include('Invalid color')
+    end
+  end
 
-		it "require 4 paramters" do
-			expect(lambda{editor_image_4_by_6.execute("F")}).to  raise_error
-			expect(editor_image_4_by_6.execute("F 1 2")).to eq("Invalid number of params")
-		end
+  context 'command_f' do
 
-		it "require validate coordinates" do
-			expect(lambda{editor_image_4_by_6.execute("F 100 200 A")}).to raise_error
-		end
+    it 'require an existing image' do
+      printed = capture_stdout do
+        editor.execute('F 1 2 A')
+      end
+      printed.should include('No image. Create one with I')
+    end
 
-		it "require valid color" do
-      expect(lambda{editor_image_4_by_6.execute("F 2 3 2")}).to raise_error
-		end
+    it 'require 4 paramters' do
+      printed = capture_stdout do
+        editor_with_image.execute('F')
+        editor_with_image.execute('F 1 2')
+      end
+      printed.should include('Invalid number of params')
+    end
 
-	end
+    it 'require validate coordinates' do
+      printed = capture_stdout do
+        editor_with_image.execute('F 100 200 A')
+      end
+      printed.should include('Invalid coordinates')
+    end
+
+    it 'require valid color' do
+      printed = capture_stdout do
+        editor_with_image.execute('F 2 3 2')
+      end
+      printed.should include('Invalid color')
+    end
+  end
 end

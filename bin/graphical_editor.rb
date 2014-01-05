@@ -4,6 +4,6 @@ require './lib/editor'
 
 editor = Editor.new
 loop do
-  command = gets.chomp
+  command = STDIN.gets.chomp
   puts editor.execute(command)
 end
