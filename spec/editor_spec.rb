@@ -129,7 +129,7 @@ describe Editor  do
 		end
 
 		it "require valid color" do 
-			expect(lambda{editor_image_4_by_6.execute("L 100 200 2")}).to raise_error
+			expect(lambda{editor_image_4_by_6.execute("L 3 2 2")}).to raise_error
 		end
 
 	end
@@ -146,11 +146,11 @@ describe Editor  do
 		end
 
 		it "require validate coordinates" do 
-
+			expect(lambda{editor_image_4_by_6.execute("V 100 200 200 A")}).to raise_error
 		end
 
 		it "require valid color" do 
-
+			expect(lambda{editor_image_4_by_6.execute("V 2 3 4 2")}).to raise_error
 		end
 
 	end
@@ -167,11 +167,11 @@ describe Editor  do
 		end
 
 		it "require validate coordinates" do
-
+			expect(lambda{editor_image_4_by_6.execute("H 100 200 200 A")}).to raise_error
 		end
 
 		it "require valid color" do 
-
+			expect(lambda{editor_image_4_by_6.execute("H 2 3 4 2")}).to raise_error
 		end
 
 	end
@@ -188,11 +188,11 @@ describe Editor  do
 		end
 
 		it "require validate coordinates" do
-
+			expect(lambda{editor_image_4_by_6.execute("F 100 200 A")}).to raise_error
 		end
 
 		it "require valid color" do
-
+      expect(lambda{editor_image_4_by_6.execute("F 2 3 2")}).to raise_error
 		end
 
 	end
