@@ -1,5 +1,5 @@
 require_relative '../lib/editor'
-require_relative './spec-helper'
+require_relative './spec-helper' # by convention, spec_helper has an underscore, not a dash
 
 describe Editor  do
 	let(:editor){Editor.new}

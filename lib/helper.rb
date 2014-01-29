@@ -1,7 +1,7 @@
 module Helper
 
   COLORS = ('A'..'Z').to_a
-  MAX_SIZE = 250
+  MAX_SIZE = 250 # well done for using constants
 
   COMMANDS = {
     LIST: 'Shows this command list',
@@ -21,6 +21,8 @@ module Helper
     end
   end
 
+  # This method both prints strings and returns them, it's a bit inconsistent. Bruce did the same 
+  # thing, you may want to discuss it with him
   def valid_command?(args)
     return 'Invalid command, please enter a valid command' unless COMMANDS.has_key?(args[0].to_sym)
     cmd = args.shift.downcase
@@ -32,12 +34,15 @@ module Helper
     end
   end
 
+  # a method that ends with "?" must not raise an error or return a colour, it should always return true/false
+  # same for other methods
   def valid_color?(color)
   	raise ArgumentError, 'Invalid color' unless COLORS.include?(color)
   	color
   end
 
   def valid_coords?(coords,image)
+    # indentation!
   		raise ArgumentError, 'Invalid coordinates' unless coords.length == 2 && image.contain?(coords)
   		coords
   end
