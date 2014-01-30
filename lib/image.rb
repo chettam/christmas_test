@@ -45,6 +45,9 @@ class Image
 		@pixels[pixel_coords[1] -1][pixel_coords[0] -1]
 	end
 
+	# You have a test that assumes that this method can take one argument but
+	# on line 39 you're passing two arguments. Is your test checking something
+	# that isn't happening in real code?
 	def touching_identical_pixel(pixel_coords,color =nil)
 		color ||= pixel_color(pixel_coords)
 		x, y = pixel_coords

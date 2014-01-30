@@ -24,8 +24,10 @@ class Editor
 		 valid_command?(command)
 	end
 	
+	# The method names are non-descriptive, it would be so much better to use some
+	# kind of a map, e.g. {:i => :new_image, :c => :clear_image}, etc
 	def i(params)
-		valid_number_of_params?(__method__,params,2)
+		valid_number_of_params?(__method__,params,2) # again, don't use question marks like this, please
 		valid_size?(params)
 		return 'Image already created, use C to clear' unless  @image.nil?
 		@image = Image.new(params[0],params[1])
